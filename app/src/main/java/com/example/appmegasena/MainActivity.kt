@@ -2,14 +2,15 @@ package com.example.appmegasena
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.util.Random
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,8 +37,41 @@ class MainActivity : AppCompatActivity() {
         // Option 3: simplest and recommended option - code block that will be fired directly by the onClickListener interface
         btnGenerate.setOnClickListener {
             // Programming logic for touch events goes here
-            Log.i("Test", "Button Clicked!!!")
+
+            val text = editText.text.toString()
+
+            numberGenerator(text, txtResult)
         }
+    }
+
+    private fun numberGenerator(text: String, txtResult: TextView) {
+        // Check if field is empty
+        if (text.isNotEmpty()) {
+            // Check if number is between 6 and 15
+            val value = text.toInt()
+
+            if (value >= 6 && value <= 15) {
+                val random = Random()
+                val numbers = mutableSetOf<Int>()
+
+                while (true) {
+                    val number = random.nextInt(60) // 0...59
+                    numbers.add(number + 1)
+
+                    if (numbers.size == value) {
+                        break
+                    }
+                }
+
+                txtResult.text = numbers.joinToString(" - ")
+
+            } else {
+                Toast.makeText(this, "Enter a number between 6 and 15", Toast.LENGTH_LONG).show()
+            }
+        } else {
+            Toast.makeText(this, "Please enter a number", Toast.LENGTH_LONG).show()
+        }
+
     }
 
 
