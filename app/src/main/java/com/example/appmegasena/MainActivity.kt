@@ -46,32 +46,33 @@ class MainActivity : AppCompatActivity() {
 
     private fun numberGenerator(text: String, txtResult: TextView) {
         // Check if field is empty
-        if (text.isNotEmpty()) {
-            // Check if number is between 6 and 15
-            val value = text.toInt()
-
-            if (value >= 6 && value <= 15) {
-                val random = Random()
-                val numbers = mutableSetOf<Int>()
-
-                while (true) {
-                    val number = random.nextInt(60) // 0...59
-                    numbers.add(number + 1)
-
-                    if (numbers.size == value) {
-                        break
-                    }
-                }
-
-                txtResult.text = numbers.joinToString(" - ")
-
-            } else {
-                Toast.makeText(this, "Enter a number between 6 and 15", Toast.LENGTH_LONG).show()
-            }
-        } else {
+        if (text.isEmpty()) {
             Toast.makeText(this, "Please enter a number", Toast.LENGTH_LONG).show()
+            return
         }
 
+        // Check if number is between 6 and 15
+        val value = text.toInt()
+
+        if (value < 6 || value > 15) {
+            Toast.makeText(this, "Enter a number between 6 and 15", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        // Generate random numbers
+        val random = Random()
+        val numbers = mutableSetOf<Int>()
+
+        while (true) {
+            val number = random.nextInt(60) // 0...59
+            numbers.add(number + 1)
+
+            if (numbers.size == value) {
+                break
+            }
+        }
+
+        txtResult.text = numbers.joinToString(" | ")
     }
 
 
