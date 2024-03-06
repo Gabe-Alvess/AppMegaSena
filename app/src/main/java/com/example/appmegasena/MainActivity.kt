@@ -1,7 +1,8 @@
 package com.example.appmegasena
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -13,6 +14,10 @@ import androidx.core.view.WindowInsetsCompat
 import java.util.Random
 
 class MainActivity : AppCompatActivity() {
+
+    // Saving simple preferences
+    private lateinit var lastResult: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -27,6 +32,27 @@ class MainActivity : AppCompatActivity() {
         val editText: EditText = findViewById(R.id.edit_number)
         val txtResult: TextView = findViewById(R.id.txt_result)
         val btnGenerate: Button = findViewById(R.id.btn_generate)
+
+        // Last result DB
+        lastResult = getSharedPreferences("db", Context.MODE_PRIVATE)
+        val result = lastResult.getString("result", null) // -> Option 1 and 2
+//        val result = lastResult.getString("result", "No records found") // -> Option 3
+
+        // Option 1 - null check message
+        /*
+        if (result != null) {
+            txtResult.text = "Last result: $result"
+        }
+        */
+
+        // Option 2 - more professional if statement for null checks
+        result?.let {
+            txtResult.text = "Last result: $it"
+        }
+
+
+        // Option 3 - default value
+//        txtResult.text = "Last result: $result"
 
         // Option 1: XML
         // Function below that need's to be called in activity_main.xml
@@ -73,6 +99,23 @@ class MainActivity : AppCompatActivity() {
         }
 
         txtResult.text = numbers.joinToString(" | ")
+
+        // Option 1
+//        val editor = lastResult.edit()
+//        editor.putString("result", txtResult.text.toString())
+//        editor.apply()
+
+        // Option 2 - multiple reference call not necessary with the kotlin inline function (apply)
+        lastResult.edit().apply {
+            putString("result", txtResult.text.toString())
+            apply()
+        }
+
+        // commit -> provides synchronous save (it will block the app until it receives a result)
+        // Informs whether the data was saved successfully or not (true|false)
+
+        // apply -> provides asynchronous save (it will not block the app until the result) -> RECOMMENDED
+        // Doesn't inform whether the data was saved successfully or not
     }
 
 
